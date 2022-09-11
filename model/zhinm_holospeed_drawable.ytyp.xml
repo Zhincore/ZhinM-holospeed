@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<CMapTypes>
+  <archetypes>
+    <Item type="CBaseArchetypeDef">
+      <lodDist value="60" />
+      <flags value="32" />
+      <specialAttribute value="0" />
+      <bbMin x="-0.64000005" y="-0.0099997" z="-0.36" />
+      <bbMax x="0.640001" y="0.010000296" z="0.36000055" />
+      <bsCentre x="4.7683716e-07" y="2.9802322e-07" z="2.682209e-07" />
+      <bsRadius value="0.73437107" />
+      <hdTextureDist value="60.000000" />
+      <name>zhinm_holospeed_drawable</name>
+      <textureDictionary>zhinm_holospeed_drawable</textureDictionary>
+      <physicsDictionary>zhinm_holospeed_drawable</physicsDictionary>
+      <assetType>ASSET_TYPE_DRAWABLE</assetType>
+      <assetName>zhinm_holospeed_drawable</assetName>
+    </Item>
+  </archetypes>
+  <name>zhinm_holospeed_drawable</name>
+</CMapTypes>

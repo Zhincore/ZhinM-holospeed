@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZhinM Holospeed</title>
+    <style>
+      body {
+        color: white;
+        font-size: 25vh;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div><span id="speed">000</span> KM/H</div>
+
+    <script defer>
+      const speedEl = document.getElementById("speed");
+
+      window.addEventListener("message", ({ data }) => {
+        speedEl.innerText = data.speed;
+      });
+    </script>
+  </body>
+</html>

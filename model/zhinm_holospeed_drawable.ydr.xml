@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Drawable>
+  <Name>zhinm_holospeed_drawable</Name>
+  <BoundingSphereCenter x="4.7683716e-07" y="2.9802322e-07" z="2.682209e-07" />
+  <BoundingSphereRadius value="0.73437107" />
+  <BoundingBoxMin x="-0.64000005" y="-0.0099997" z="-0.36" />
+  <BoundingBoxMax x="0.640001" y="0.010000296" z="0.36000055" />
+  <LodDistHigh value="9998" />
+  <LodDistMed value="9998" />
+  <LodDistLow value="9998" />
+  <LodDistVlow value="9998" />
+  <FlagsHigh value="1" />
+  <FlagsMed value="0" />
+  <FlagsLow value="0" />
+  <FlagsVlow value="0" />
+  <Unknown9A value="0" />
+  <ShaderGroup>
+    <Unknown30 value="0" />
+    <Shaders>
+      <Item>
+        <Name>emissive_additive_alpha</Name>
+        <FileName>emissive_additive_alpha.sps</FileName>
+        <RenderBucket value="1" />
+        <Parameters>
+          <Item name="DiffuseSampler" type="Texture">
+            <Name>holospeed</Name>
+          </Item>
+          <Item name="matMaterialColorScale" type="Vector" x="1.0" y="0.0" z="0.0" w="1.0" />
+          <Item name="useTessellation" type="Vector" x="0.0" y="0.0" z="0.0" w="0.0" />
+          <Item name="emissiveMultiplier" type="Vector" x="16.0" y="0.0" z="0.0" w="0.0" />
+        </Parameters>
+      </Item>
+    </Shaders>
+  </ShaderGroup>
+  <Skeleton>
+    <Unknown1C value="16777216" />
+    <Unknown50 value="239958909" />
+    <Unknown54 value="1483433655" />
+    <Unknown58 value="1578145239" />
+    <Bones>
+      <Item>
+        <Name>zhinm_holospeed_drawable</Name>
+        <Tag value="0" />
+        <Index value="0" />
+        <ParentIndex value="-1" />
+        <SiblingIndex value="-1" />
+        <Flags>RotX, RotY, RotZ, TransX, TransY, TransZ</Flags>
+        <Translation x="0.0" y="0.0" z="0.0" />
+        <Rotation x="0.0" y="0.0" z="0.0" w="1.0" />
+        <Scale x="1.0" y="1.0" z="1.0" />
+        <TransformUnk x="0.0" y="4.0" z="-3.0" w="0.0" />
+      </Item>
+    </Bones>
+  </Skeleton>
+  <Joints />
+  <DrawableModelsHigh>
+    <Item>
+      <RenderMask value="255" />
+      <Flags value="0" />
+      <HasSkin value="0" />
+      <BoneIndex value="0" />
+      <Unknown1 value="0" />
+      <Geometries>
+        <Item>
+          <ShaderIndex value="0" />
+          <BoundingBoxMin x="-0.64000005" y="0.0031679214" z="-0.36" />
+          <BoundingBoxMax x="0.64000005" y="0.0031679214" z="0.36" />
+          <BoneIDs>0</BoneIDs>
+          <VertexBuffer>
+            <Flags value="0" />
+            <Layout type="GTAV1">
+              <Position />
+              <Normal />
+              <Colour0 />
+              <TexCoord0 />
+            </Layout>
+            <Data>
+              -0.64000005 -0.04683208 0.36   0.0 1.0 0.0   255 255 255 255   0.0 -0.0   
+              -0.64000005 -0.04683208 -0.36   0.0 1.0 0.0   255 255 255 255   0.0 1.0   
+              0.64000005 -0.04683208 0.36   0.0 1.0 0.0   255 255 255 255   1.0 -0.0   
+              0.64000005 -0.04683208 -0.36   0.0 1.0 0.0   255 255 255 255   1.0 1.0
+            </Data>
+          </VertexBuffer>
+          <IndexBuffer>
+            <Data>0 1 2 3 2 1</Data>
+          </IndexBuffer>
+        </Item>
+        <Item>
+          <ShaderIndex value="0" />
+          <BoundingBoxMin x="-0.64000005" y="-0.0031679214" z="-0.36" />
+          <BoundingBoxMax x="0.64000005" y="-0.0031679214" z="0.36" />
+          <BoneIDs>0</BoneIDs>
+          <VertexBuffer>
+            <Flags value="0" />
+            <Layout type="GTAV1">
+              <Position />
+              <Normal />
+              <Colour0 />
+              <TexCoord0 />
+            </Layout>
+            <Data>
+              -0.64000005 -0.05316792 0.36   0.0 -1.0 0.0   255 255 255 255   0.0 -0.0   
+              -0.64000005 -0.05316792 -0.36   0.0 -1.0 0.0   255 255 255 255   0.0 1.0   
+              0.64000005 -0.05316792 0.36   0.0 -1.0 0.0   255 255 255 255   1.0 -0.0   
+              0.64000005 -0.05316792 -0.36   0.0 -1.0 0.0   255 255 255 255   1.0 1.0
+            </Data>
+          </VertexBuffer>
+          <IndexBuffer>
+            <Data>0 1 2 3 2 1</Data>
+          </IndexBuffer>
+        </Item>
+      </Geometries>
+    </Item>
+  </DrawableModelsHigh>
+  <Bounds type="Box">
+    <BoxMin x="-0.2999997" y="-0.0099997" z="-0.15999985" />
+    <BoxMax x="0.30000067" y="0.010000296" z="0.16000032" />
+    <BoxCenter x="4.7683716e-07" y="2.9802322e-07" z="2.3841858e-07" />
+    <SphereCenter x="4.7683716e-07" y="2.9802322e-07" z="2.3841858e-07" />
+    <SphereRadius value="0" />
+    <Margin value="0.0024999995" />
+    <Volume value="0.0038400036" />
+    <Inertia x="0.008566676" y="0.03853338" z="0.030033372" />
+    <MaterialIndex value="0" />
+    <MaterialColourIndex value="0" />
+    <ProceduralID value="0" />
+    <RoomID value="0" />
+    <PedDensity value="0" />
+    <UnkFlags value="0" />
+    <PolyFlags value="0" />
+    <UnkType value="1" />
+    <CompositeTransform>
+      2.1333320140838623 0.0 0.0 0.0
+      0.0 1.0 0.0 0.0
+      0.0 0.0 2.2499988079071045 0.0
+      0.0 0.0 0.0 1.0
+    </CompositeTransform>
+  </Bounds>
+</Drawable>

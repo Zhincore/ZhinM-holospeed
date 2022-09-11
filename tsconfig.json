@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noImplicitAny": true,
+    "module": "esnext",
+    "target": "ESNext",
+    "lib": ["es2021"],
+    "types": ["@citizenfx/client"],
+    "strict": true,
+    "alwaysStrict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "noEmit": true
+  },
+  "include": ["./src"]
+}
