@@ -4,9 +4,10 @@ type FixedLengthArray<T extends any[]> = Pick<T, Exclude<keyof T, ArrayLengthMut
   [Symbol.iterator]: () => IterableIterator<ArrayItems<T>>;
 };
 
-type IVector3 = FixedLengthArray<[number, number, number]> & { [x in number]: number };
+export type IVector3 = [number, number, number];
+
 interface IVector3Constuctor {
-  new (...items: number[]): IVector3;
+  new (...items: number[]): FixedLengthArray<IVector3> & { [x in number]: number };
 }
 
 export class Vector3 extends (Array as any as IVector3Constuctor) {
@@ -61,5 +62,9 @@ export class Vector3 extends (Array as any as IVector3Constuctor) {
 
   toTuple() {
     return Array.from(this) as [number, number, number];
+  }
+
+  getLength() {
+    return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
   }
 }

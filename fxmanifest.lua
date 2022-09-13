@@ -7,7 +7,7 @@ version "1.0.0"
 
 client_script "dist/client.js"
 
-files {"index.html", "dist/dui.js"}
+files {"dui/index.html", "dui/assets/*"}
 
 data_file "DLC_ITYP_REQUEST" "stream/zhinm_holospeed_drawable.ytyp"
 

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZhinM Holospeed</title>
+    <style>
+      @font-face {
+        font-family: "Square Sans Serif";
+        src: url("assets/square_sans_serif_7.ttf");
+      }
+
+      :root {
+        --color: white;
+        --opacity: 0.9;
+        --dataOpacity: 0;
+        --scale: 0.5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        overflow: hidden;
+        white-space: nowrap;
+        margin: 0;
+        padding: 2vw; /* keep in sync with shadow */
+        color: var(--color);
+        opacity: var(--opacity);
+        transition: opacity 0.3s;
+        font-family: sans-serif;
+        font-size: 10vh;
+        line-height: 0;
+        /* background-color: gray; */
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        flex-direction: column;
+        justify-content: center;
+        transform-origin: left center;
+        transform: scale(var(--scale));
+      }
+
+      #speed {
+        font-family: "Square Sans Serif", sans-serif;
+        display: flex;
+        align-items: center;
+      }
+      #speed-val-wrap {
+        position: relative;
+      }
+      #speed-val,
+      #speed-bg {
+        font-size: 39vw;
+      }
+      #speed-val {
+        position: absolute;
+        inset: 0;
+        opacity: var(--dataOpacity);
+        transition: opacity 0.3s;
+      }
+      #speed-val > * {
+        display: inline-block;
+        width: 33.333%;
+        text-align: right;
+      }
+      #speed-bg {
+        opacity: 0.3;
+      }
+      #speed-unit {
+        writing-mode: vertical-rl;
+        text-orientation: sideways;
+        font-size: 8.5vw;
+        margin-top: 1vh;
+        opacity: calc(0.3 + var(--dataOpacity));
+        transition: opacity 0.3s;
+      }
+
+      #rpm {
+        width: 100%;
+        height: 6vh;
+        position: relative;
+        margin-top: 10vh;
+      }
+      #rpm-bg {
+        background-color: currentColor;
+        opacity: 0.3;
+        width: 100%;
+        height: 100%;
+      }
+      #rpm-val {
+        height: 100%;
+        width: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: currentColor;
+        opacity: var(--dataOpacity);
+        transition: opacity 0.3s;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="speed">
+      <div id="speed-val-wrap">
+        <div id="speed-bg">000</div>
+        <div id="speed-val"><span></span><span>9</span><span>1</span></div>
+      </div>
+
+      <div id="speed-unit">KMH</div>
+    </div>
+
+    <div id="rpm">
+      <div id="rpm-bg"></div>
+      <div id="rpm-val"></div>
+    </div>
+
+    <script defer>
+      const speedUnitEl = document.getElementById("speed-unit");
+      const speedValEl = document.getElementById("speed-val");
+      const rpmValEl = document.getElementById("rpm-val");
+
+      window.addEventListener("message", ({ data }) => {
+        const speed = String(data.speed).padStart(3);
+
+        speedValEl.childNodes.forEach((node, i) => (node.innerText = speed[i]));
+        speedUnitEl.innerText = data.unit;
+        rpmValEl.style.width = data.rpm * 100 + "%";
+
+        const style = document.documentElement.style;
+        style.setProperty("--color", data.settings.color);
+        style.setProperty("--opacity", data.settings.opacity);
+        style.setProperty("--scale", data.scale);
+        style.setProperty("--dataOpacity", data.silent ? 0 : 1);
+      });
+    </script>
+  </body>
+</html>
