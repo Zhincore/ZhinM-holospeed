@@ -1,6 +1,6 @@
 # Holospeed
 
-Holographic vehicle speed-o-meter.
+Holographic vehicle speed-o-meter for FiveM (server).
 
 ## Features
 
