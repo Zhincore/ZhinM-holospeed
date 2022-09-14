@@ -27,7 +27,7 @@ on("onClientResourceStart", async (resName: string) => {
     // Settings update checker
     settingsUpdateInterval = setInterval(() => {
       const metric = GetProfileSetting(227) == 1;
-      speedUnit = metric ? "KMH" : "MPH";
+      speedUnit = metric ? "KPH" : "MPH";
       speedMult = metric ? 3.6 : 2.236936;
     }, 1000);
 
