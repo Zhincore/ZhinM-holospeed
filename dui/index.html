@@ -17,6 +17,11 @@
         --scale: 0.5;
       }
 
+      .data {
+        opacity: var(--opacity);
+        transition: opacity 0.5s;
+      }
+
       * {
         box-sizing: border-box;
       }
@@ -26,8 +31,6 @@
         margin: 0;
         padding: 2vw; /* keep in sync with shadow */
         color: var(--color);
-        opacity: var(--opacity);
-        transition: opacity 0.3s;
         font-family: sans-serif;
         font-size: 10vh;
         line-height: 0;
@@ -56,8 +59,6 @@
       #speed-val {
         position: absolute;
         inset: 0;
-        opacity: var(--dataOpacity);
-        transition: opacity 0.3s;
       }
       #speed-val > * {
         display: inline-block;
@@ -73,7 +74,6 @@
         font-size: 8.5vw;
         margin-top: 1vh;
         opacity: calc(0.3 + var(--dataOpacity));
-        transition: opacity 0.3s;
       }
 
       #rpm {
@@ -95,8 +95,6 @@
         top: 0;
         left: 0;
         background-color: currentColor;
-        opacity: var(--dataOpacity);
-        transition: opacity 0.3s;
       }
     </style>
   </head>
@@ -104,15 +102,15 @@
     <div id="speed">
       <div id="speed-val-wrap">
         <div id="speed-bg">000</div>
-        <div id="speed-val"><span></span><span>9</span><span>1</span></div>
+        <div id="speed-val" class="data"><span></span><span>9</span><span>1</span></div>
       </div>
 
-      <div id="speed-unit">KMH</div>
+      <div id="speed-unit" class="data">KMH</div>
     </div>
 
     <div id="rpm">
       <div id="rpm-bg"></div>
-      <div id="rpm-val"></div>
+      <div id="rpm-val" class="data"></div>
     </div>
 
     <script defer>
