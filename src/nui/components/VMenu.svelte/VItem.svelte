@@ -1,11 +1,12 @@
 <script lang="ts">
   import { getVMenuContext } from "./vMenuContext";
+  import api from "../../api";
 
   // These cannot be changed during runtime
   export let isFirst = false;
   export let isHidden = false;
   export let isTitle = false;
-  export let action: (ev: MouseEvent) => void = () => null;
+  export let onAction: (() => void) | undefined = undefined;
   export let isAttached = false;
 
   const isSelectable = !isTitle && !isHidden;
@@ -16,13 +17,19 @@
   const index = context.itemCount++;
   const selectIndex = isSelectable ? context.selectableItemCount++ : -1;
 
+  const doAction = () => {
+    if (!onAction) return;
+    api.send("sound", { type: "select" });
+    return onAction();
+  };
+
   $: if (isSelectable) vMenu.updateItem(selectIndex, { isAttached });
   $: isActive = $vMenu.activeItem === selectIndex;
 </script>
 
 {#if isAttached || (index <= $vMenu.offset + $vMenu.itemsPerPage && index > $vMenu.offset)}
   <li
-    on:click={action}
+    on:click={doAction}
     class:active={isActive}
     class:hidden={isHidden}
     class:title={isTitle}

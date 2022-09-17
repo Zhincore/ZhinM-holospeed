@@ -1,5 +1,6 @@
 <script lang="ts">
   import VItem from "../VItem.svelte";
+  import api from "../../../api";
 
   export let label: string;
   export let value = 0;
@@ -21,6 +22,8 @@
     dragging = true;
     onMouse(ev);
   };
+
+  $: (value || 1) && api.send("sound", { type: "leftright" });
 </script>
 
 <svelte:window on:mouseup={() => (dragging = false)} on:mousemove={onMouse} />

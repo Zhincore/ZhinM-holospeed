@@ -16,7 +16,7 @@ Holographic vehicle speed-o-meter for FiveM (server).
 ## TODO
 
 - Configuration GUI
-- Background opacity auto-adjustment (vehicle lights?)
+- Brightness auto-adjustment (vehicle lights?)
 
 ## Credits
 

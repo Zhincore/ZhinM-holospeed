@@ -9,7 +9,7 @@
   export let value = false;
 </script>
 
-<VItem action={() => (value = !value)}>
+<VItem onAction={() => (value = !value)}>
   {label}
 
   <div slot="icon" class="icon">

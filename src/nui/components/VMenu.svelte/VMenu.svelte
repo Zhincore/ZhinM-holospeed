@@ -2,6 +2,7 @@
   import { createVMenuContext } from "./vMenuContext";
   import VSubHeader from "./VSubHeader.svelte";
   import VItem from "./VItem.svelte";
+  import api from "../../api";
 
   export let itemsPerPage = 9;
 
@@ -15,6 +16,8 @@
     store.update({ offset: Math.max(0, Math.min(itemCount - itemsPerPage + 1, $store.offset + delta)) });
 
   const onWheel = (ev: WheelEvent) => scroll(Math.sign(ev.deltaY));
+
+  $: ($store.activeItem || 1) && api.send("sound", { type: "updown" });
 </script>
 
 <div class="content" on:wheel={onWheel}>
@@ -29,7 +32,7 @@
 <style lang="scss">
   .content {
     background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(0.4rem);
+    // backdrop-filter: blur(0.4rem);
   }
 
   .menu {

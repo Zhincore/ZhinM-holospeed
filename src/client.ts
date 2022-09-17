@@ -27,6 +27,7 @@ let hidden = false;
 let lastUserOffset = new Vector3(...settings.offset);
 
 RegisterNuiCallbackType("init");
+RegisterNuiCallbackType("sound");
 RegisterNuiCallbackType("update");
 RegisterNuiCallbackType("save");
 RegisterNuiCallbackType("close");
@@ -34,24 +35,39 @@ RegisterNuiCallbackType("close");
 on("__cfx_nui:init", (data: any, cb: any) => {
   settingsReady = true;
   sendSettingsUpdate();
-  cb();
+  cb({});
+});
+
+on("__cfx_nui:sound", (data: any, cb: any) => {
+  switch (data.type) {
+    case "updown":
+      PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
+      break;
+    case "leftright":
+      PlaySoundFrontend(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
+      break;
+    case "select":
+      PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true);
+      break;
+  }
+  cb({});
 });
 
 on("__cfx_nui:update", (data: any, cb: any) => {
   Object.assign(settings, data);
-  cb();
+  cb({});
 });
 
 on("__cfx_nui:save", (data: any, cb: any) => {
   Object.assign(settings, data);
   settings.save();
   toggleSettings(false);
-  cb();
+  cb({});
 });
 
 on("__cfx_nui:close", (data: any, cb: any) => {
   toggleSettings(false);
-  cb();
+  cb({});
 });
 
 RegisterCommand(
@@ -100,11 +116,11 @@ on("onResourceStop", (resName: string) => {
 });
 
 setTick(() => {
-  if (!settings.enabled || !ready) return;
+  if (!ready) return;
 
   const ped = PlayerPedId();
   const veh = GetVehiclePedIsIn(ped, false);
-  const shouldBeVisible = veh && GetFollowPedCamViewMode() !== 4;
+  const shouldBeVisible = settings.enabled && veh && GetFollowPedCamViewMode() !== 4;
 
   if (!shouldBeVisible && !hidden) {
     SetEntityVisible(objHandle, false, false);
@@ -115,7 +131,7 @@ setTick(() => {
       hidden = false;
     }
 
-    if (lastVeh != veh || lastUserOffset.equals(settings.offset)) {
+    if (lastVeh != veh || !lastUserOffset.equals(settings.offset)) {
       // Attach object
       const [boxMin, boxMax] = GetModelDimensions(GetEntityModel(veh));
       const dimensions = new Vector3(...boxMax).sub(new Vector3(...boxMin));
@@ -153,7 +169,7 @@ setTick(() => {
         veh,
         0,
         // Pos
-        ...offset.add(lastUserOffset.mult(offsetMult)).toTuple(),
+        ...offset.add(lastUserOffset.sub(0.5).mult(offsetMult)).toTuple(),
         // Rot
         0,
         0,
@@ -169,6 +185,9 @@ setTick(() => {
       lastVeh = veh;
     }
 
+    const [_, isNight] = GetVehicleLightsState(veh);
+    const opacity = isNight ? 0.5 : 1;
+
     if (IsVehicleEngineOn(veh)) {
       let rpm = GetVehicleCurrentRpm(veh);
       // Simulate limiter
@@ -178,12 +197,14 @@ setTick(() => {
         silent: false,
         speed: Math.round(GetEntitySpeed(veh) * speedMult),
         rpm,
+        opacity,
       });
     } else {
       sendDuiUpdate({
         silent: true,
         speed: 0,
         rpm: 0,
+        opacity,
       });
     }
   }
@@ -193,6 +214,7 @@ interface DuiUpdateData {
   silent: boolean;
   speed: number;
   rpm: number;
+  opacity: number;
 }
 
 function sendDuiUpdate(data: DuiUpdateData) {
@@ -211,6 +233,7 @@ function sendSettingsUpdate() {
 function toggleSettings(state: boolean) {
   if (sendSettingsMessage("toggle", { state })) {
     settingsVisible = state;
+    SetNuiFocus(state, state);
   }
 }
 

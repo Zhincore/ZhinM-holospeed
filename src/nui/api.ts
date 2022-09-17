@@ -1,8 +1,5 @@
 import EventEmitter from "eventemitter3";
 
-const NUI_URL = new URL("/", location.href);
-NUI_URL.protocol = "https:";
-
 class API extends EventEmitter {
   constructor() {
     super();
@@ -12,10 +9,8 @@ class API extends EventEmitter {
   }
 
   send(eventName: string, data: Record<string, any> = {}) {
-    const url = new URL(NUI_URL);
-    url.pathname = eventName;
     if (import.meta.env.DEV) return Promise.resolve();
-    return fetch(url.href, {
+    return fetch(`https://${GetParentResourceName()}/${eventName}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=UTF-8",

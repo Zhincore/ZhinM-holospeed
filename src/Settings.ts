@@ -6,9 +6,8 @@ export class Settings {
   }
 
   enabled = true;
-  opacity = 0.9;
   color: IVector3 = [1, 1, 1];
-  offset: IVector3 = [0, 0, 0];
+  offset: IVector3 = [0.5, 0.5, 0.5];
   // rotation: IVector3 = [0, 0, 0];
   scale = 1;
 
@@ -17,7 +16,11 @@ export class Settings {
   }
 
   load() {
-    Object.assign(this, JSON.parse(GetResourceKvpString("ZhinM-holospeed:settings") || "{}"));
+    const data = JSON.parse(GetResourceKvpString("ZhinM-holospeed:settings") || "{}");
+    if ("enabled" in data) this.enabled = data.enabled;
+    if (Array.isArray(data.color)) this.color = data.color;
+    if (Array.isArray(data.offset)) this.offset = data.offset;
+    if (typeof data.scale === "number") this.scale = data.scale;
   }
 }
 

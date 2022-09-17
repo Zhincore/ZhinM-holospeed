@@ -22,6 +22,11 @@
 
   const onKeyDown = (ev: KeyboardEvent) => {
     if (!shown) return;
+    switch (ev.key) {
+      case "Escape":
+        api.send("close");
+        break;
+    }
   };
 
   $: api.send("update", { enabled, offset, color });
@@ -32,7 +37,8 @@
 {#if shown}
   <Window initialPos={[window.innerWidth * 0.6, window.innerHeight * 0.1]}>
     <div class="header" slot="header">
-      Holospeed <button class="button close"><Icon data={faXmark} scale={1.5} /></button>
+      Holospeed
+      <button class="button close" on:click={() => api.send("close")}><Icon data={faXmark} scale={1.5} /></button>
     </div>
 
     <VMenu>
@@ -76,7 +82,7 @@
       </SliderVItem>
 
       <VItem isAttached isTitle><div slot="icon" class="separator" /></VItem>
-      <VItem isAttached action={() => api.send("save", { enabled, offset, color })}>
+      <VItem isAttached onAction={() => api.send("save", { enabled, offset, color })}>
         Save
 
         <Icon slot="icon" data={faCheck} />
@@ -111,7 +117,7 @@
       top: 50%;
       transform: translateY(-50%);
       padding: 0.3rem 0.8rem;
-      transition: color 0.3s, background-color 0.3s;
+      transition: color 0.2s, background-color 0.2s;
 
       &:hover {
         color: black;
@@ -125,7 +131,7 @@
     height: 1rem;
     margin-right: 0.5rem;
     opacity: 0.5;
-    transition: opacity 0.3s, color 0.3s;
+    transition: opacity 0.2s, color 0.2s;
 
     &:hover {
       opacity: 1;
