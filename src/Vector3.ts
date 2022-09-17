@@ -67,4 +67,8 @@ export class Vector3 extends (Array as any as IVector3Constuctor) {
   getLength() {
     return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
   }
+
+  equals(vec: Vector3 | IVector3) {
+    return this.every((v, i) => v === vec[i]);
+  }
 }

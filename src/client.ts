@@ -1,26 +1,66 @@
 import { Vector3, IVector3 } from "./Vector3";
-import settings from "./Settings";
+import settings, { Settings } from "./Settings";
 
-const width = 640;
-const height = 360;
+const width = 320;
+const height = 180;
 
 const modelHash = GetHashKey("zhinm_holospeed_drawable");
 const modelDimensions = new Vector3(3.84, 2.16);
 const minScale = 0.25;
+const offsetMult = 2;
 const txdName = "zhinm_holospeed_drawable";
 const txdNameDui = txdName + "-dui";
 const txnName = "holospeed";
 
+let settingsReady = false;
+let settingsVisible = false;
 let speedUnit = "";
 let speedMult = 1;
+let scale = 0.5;
 let settingsUpdateInterval: CitizenTimer;
 
-let scale = 0.5;
 let objHandle = 0;
 let duiObj = 0;
 let lastVeh = 0;
 let ready = false;
 let hidden = false;
+let lastUserOffset = new Vector3(...settings.offset);
+
+RegisterNuiCallbackType("init");
+RegisterNuiCallbackType("update");
+RegisterNuiCallbackType("save");
+RegisterNuiCallbackType("close");
+
+on("__cfx_nui:init", (data: any, cb: any) => {
+  settingsReady = true;
+  sendSettingsUpdate();
+  cb();
+});
+
+on("__cfx_nui:update", (data: any, cb: any) => {
+  Object.assign(settings, data);
+  cb();
+});
+
+on("__cfx_nui:save", (data: any, cb: any) => {
+  Object.assign(settings, data);
+  settings.save();
+  toggleSettings(false);
+  cb();
+});
+
+on("__cfx_nui:close", (data: any, cb: any) => {
+  toggleSettings(false);
+  cb();
+});
+
+RegisterCommand(
+  "holospeed",
+  () => {
+    toggleSettings(true);
+  },
+  false
+);
 
 on("onClientResourceStart", async (resName: string) => {
   if (resName === GetCurrentResourceName()) {
@@ -75,7 +115,7 @@ setTick(() => {
       hidden = false;
     }
 
-    if (lastVeh != veh) {
+    if (lastVeh != veh || lastUserOffset.equals(settings.offset)) {
       // Attach object
       const [boxMin, boxMax] = GetModelDimensions(GetEntityModel(veh));
       const dimensions = new Vector3(...boxMax).sub(new Vector3(...boxMin));
@@ -106,12 +146,14 @@ setTick(() => {
         offset.z = dimensions.z * 0.2;
       }
 
+      lastUserOffset = new Vector3(...settings.offset);
+
       AttachEntityToEntity(
         objHandle,
         veh,
         0,
         // Pos
-        ...offset.toTuple(),
+        ...offset.add(lastUserOffset.mult(offsetMult)).toTuple(),
         // Rot
         0,
         0,
@@ -122,7 +164,7 @@ setTick(() => {
         false,
         false,
         2,
-        true,
+        true
       );
       lastVeh = veh;
     }
@@ -160,6 +202,20 @@ function sendDuiUpdate(data: DuiUpdateData) {
     settings,
     ...data,
   });
+}
+
+function sendSettingsUpdate() {
+  sendSettingsMessage("data", settings);
+}
+
+function toggleSettings(state: boolean) {
+  if (sendSettingsMessage("toggle", { state })) {
+    settingsVisible = state;
+  }
+}
+
+function sendSettingsMessage(eventName: string, data = {}) {
+  return SendNuiMessage(JSON.stringify({ eventName, ...data }));
 }
 
 function sendDui(data: any) {

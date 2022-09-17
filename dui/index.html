@@ -128,7 +128,8 @@
         rpmValEl.style.width = data.rpm * 100 + "%";
 
         const style = document.documentElement.style;
-        style.setProperty("--color", data.settings.color);
+        const { color } = data.settings;
+        style.setProperty("--color", `hsl(${color[0] * 360}deg, ${color[1] * 100}%, ${color[2] * 100}%)`);
         style.setProperty("--opacity", data.settings.opacity);
         style.setProperty("--scale", data.scale);
         style.setProperty("--dataOpacity", data.silent ? 0 : 1);

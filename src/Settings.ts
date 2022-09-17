@@ -1,13 +1,15 @@
-class Settings {
+import { IVector3 } from "./Vector3";
+
+export class Settings {
   constructor() {
     this.load();
   }
 
   enabled = true;
-  color = "#FFFFFF";
   opacity = 0.9;
-  offset = [0, 0, 0];
-  rotation = [0, 0, 0];
+  color: IVector3 = [1, 1, 1];
+  offset: IVector3 = [0, 0, 0];
+  // rotation: IVector3 = [0, 0, 0];
   scale = 1;
 
   save() {

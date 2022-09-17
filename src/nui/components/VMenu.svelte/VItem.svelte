@@ -1,28 +1,65 @@
 <script lang="ts">
-  export let isLabel = false;
-  export let action: () => void = () => null;
+  import { getVMenuContext } from "./vMenuContext";
+
+  // These cannot be changed during runtime
+  export let isFirst = false;
+  export let isHidden = false;
+  export let isTitle = false;
+  export let action: (ev: MouseEvent) => void = () => null;
+  export let isAttached = false;
+
+  const isSelectable = !isTitle && !isHidden;
+
+  const context = getVMenuContext();
+  const { vMenu } = context;
+  if (isFirst) context.itemCount = context.selectableItemCount = 0;
+  const index = context.itemCount++;
+  const selectIndex = isSelectable ? context.selectableItemCount++ : -1;
+
+  $: if (isSelectable) vMenu.updateItem(selectIndex, { isAttached });
+  $: isActive = $vMenu.activeItem === selectIndex;
 </script>
 
-<li on:click={action} class:label={isLabel}><slot /> <slot name="icon" /></li>
+{#if isAttached || (index <= $vMenu.offset + $vMenu.itemsPerPage && index > $vMenu.offset)}
+  <li
+    on:click={action}
+    class:active={isActive}
+    class:hidden={isHidden}
+    class:title={isTitle}
+    on:mouseenter={() => isSelectable && vMenu.setActive(selectIndex)}
+  >
+    <div class="label"><slot /></div>
+    <slot name="icon" />
+  </li>
+{/if}
 
 <style lang="scss">
-  li:not(.label) {
+  li {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
 
-    cursor: pointer;
-    padding: 0.7rem 1rem;
-    transition: color 0.3s, background-color 0.3s;
+    &:not(.title) {
+      cursor: pointer;
+      padding: 0.7rem 1rem;
+      transition: color 0.2s, background-color 0.2s;
 
-    &:focus,
-    &:hover {
-      background-color: #eee;
-      color: black;
+      &.active {
+        background-color: rgba(250, 250, 250, 0.8);
+        color: black;
+      }
     }
-  }
 
-  li.label {
-    padding: 0.3rem 0.5rem;
-    font-weight: bold;
+    &.title {
+      padding: 0.7rem 0.5rem 0.3rem;
+      font-weight: bold;
+    }
+
+    &.hidden {
+      display: none;
+    }
+
+    .label {
+      margin-right: auto;
+    }
   }
 </style>

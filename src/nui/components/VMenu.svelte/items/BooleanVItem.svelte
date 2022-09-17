@@ -15,7 +15,7 @@
   <div slot="icon" class="icon">
     <div><Icon data={faSquare} scale={1.1} /></div>
     {#if value}
-      <div transition:fade={{ duration: 300 }}><Icon data={faCheck} scale={1.35} /></div>
+      <div transition:fade|local={{ duration: 200 }}><Icon data={faCheck} scale={1.35} /></div>
     {/if}
     <!-- <input type="checkbox" bind:checked={value} /> -->
   </div>
