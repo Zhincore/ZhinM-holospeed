@@ -1,6 +1,4 @@
-const esbuild = require("esbuild");
-
-const production = process.argv.findIndex((argItem) => argItem === "--mode=production") >= 0;
+import esbuild from "esbuild";
 
 const onRebuild = (context) => {
   return async (err, res) => {
@@ -20,17 +18,17 @@ const client = {
   format: "iife",
 };
 
-for (const context of [client]) {
-  esbuild
-    .build({
-      ...context,
-      bundle: true,
-      watch: production
-        ? false
-        : {
-            onRebuild: onRebuild(context.outfile),
-          },
-    })
-    .then(() => console.log(`[${context.outfile}]: Built successfully!`))
-    .catch(() => process.exit(1));
+export function build(watch) {
+  for (const context of [client]) {
+    esbuild
+      .build({
+        ...context,
+        bundle: true,
+        watch: watch && {
+          onRebuild: onRebuild(context.outfile),
+        },
+      })
+      .then(() => console.log(`[${context.outfile}]: Built successfully!`))
+      .catch(() => process.exit(1));
+  }
 }

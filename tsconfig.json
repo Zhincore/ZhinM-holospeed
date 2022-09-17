@@ -5,7 +5,7 @@
     "module": "esnext",
     "target": "ESNext",
     "lib": ["es2021"],
-    "types": ["@citizenfx/client"],
+    "types": ["@citizenfx/client", "vite/client"],
     "strict": true,
     "alwaysStrict": true,
     "moduleResolution": "node",
