@@ -15,6 +15,7 @@
         --opacity: 0.9;
         --dataOpacity: 1;
         --scale: 0.5;
+        font-size: 0.83vw;
       }
 
       * {
@@ -28,8 +29,7 @@
         opacity: var(--opacity);
         transition: opacity 0.5s;
         font-family: sans-serif;
-        font-size: 10vh;
-        line-height: 0;
+        line-height: 0.5;
         /* background-color: gray; */
         display: flex;
         height: 100vh;
@@ -44,13 +44,15 @@
         font-family: "Square Sans Serif", sans-serif;
         display: flex;
         align-items: center;
+        justify-content: flex-start;
+        font-size: 46.5rem;
+        transition: font-size 0.2s;
+      }
+      #speed.larger {
+        font-size: 54rem;
       }
       #speed-val-wrap {
         position: relative;
-      }
-      #speed-val,
-      #speed-bg {
-        font-size: 39vw;
       }
       #speed-val {
         position: absolute;
@@ -58,28 +60,45 @@
         opacity: var(--dataOpacity);
         transition: opacity 0.5s;
       }
-      #speed-val > * {
+      #speed-val > *,
+      #speed-bg > * {
         display: inline-block;
-        width: 33.333%;
+        width: 33.3333%;
         text-align: right;
+        letter-spacing: -2rem;
       }
       #speed-bg {
         opacity: 0.3;
       }
       #speed-unit {
-        writing-mode: vertical-rl;
-        text-orientation: sideways;
-        font-size: 8.5vw;
-        margin-top: 1vh;
+        font-size: 20rem;
+        font-weight: bold;
+        height: 99%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         opacity: calc(0.3 + var(--dataOpacity));
-        transition: opacity 0.5s;
+        transform-origin: right;
+        transition: opacity 0.5s, transform 0.2s;
+      }
+      #speed-unit.hidden {
+        transform: scaleX(0);
+      }
+      #speed-unit > span {
+        display: block;
+        text-align: center;
       }
 
       #rpm {
         width: 100%;
-        height: 6vh;
+        height: 4rem;
         position: relative;
-        margin-top: 10vh;
+        margin-top: 5rem;
+        transition: height 0.2s, margin-top 0.2s;
+      }
+      #rpm.hidden {
+        height: 0;
+        margin-top: 0;
       }
       #rpm-bg {
         background-color: currentColor;
@@ -102,11 +121,11 @@
   <body>
     <div id="speed">
       <div id="speed-val-wrap">
-        <div id="speed-bg">000</div>
+        <div id="speed-bg"><span>0</span><span>0</span><span>0</span></div>
         <div id="speed-val"><span></span><span>9</span><span>1</span></div>
       </div>
 
-      <div id="speed-unit">KMH</div>
+      <div id="speed-unit"><span>K</span><span>i</span></div>
     </div>
 
     <div id="rpm">
@@ -115,16 +134,22 @@
     </div>
 
     <script defer>
+      const speedEl = document.getElementById("speed");
       const speedUnitEl = document.getElementById("speed-unit");
       const speedValEl = document.getElementById("speed-val");
+      const rpmEl = document.getElementById("rpm");
       const rpmValEl = document.getElementById("rpm-val");
 
       window.addEventListener("message", ({ data }) => {
         const speed = String(data.speed).padStart(3);
 
         speedValEl.childNodes.forEach((node, i) => (node.innerText = speed[i]));
-        speedUnitEl.innerText = data.unit;
+        speedUnitEl.childNodes.forEach((node, i) => (node.innerText = data.unit[i]));
         rpmValEl.style.width = data.rpm * 100 + "%";
+
+        rpmEl.classList.toggle("hidden", !data.settings.showRPM);
+        speedUnitEl.classList.toggle("hidden", !data.settings.showUnit);
+        speedEl.classList.toggle("larger", !data.settings.showUnit);
 
         const style = document.documentElement.style;
         const { color } = data.settings;

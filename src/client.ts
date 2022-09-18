@@ -1,5 +1,5 @@
 import { Vector3, IVector3 } from "./Vector3";
-import settings, { Settings } from "./Settings";
+import settings, { Settings } from "./ClientSettings";
 
 const width = 320;
 const height = 180;
@@ -12,7 +12,6 @@ const txdName = "zhinm_holospeed_drawable";
 const txdNameDui = txdName + "-dui";
 const txnName = "holospeed";
 
-let settingsVisible = false;
 let speedUnit = "";
 let speedMult = 1;
 let scale = 0.5;
@@ -28,7 +27,6 @@ let lastUserOffset = new Vector3(...settings.offset);
 RegisterNuiCallbackType("init");
 RegisterNuiCallbackType("sound");
 RegisterNuiCallbackType("update");
-RegisterNuiCallbackType("save");
 RegisterNuiCallbackType("close");
 
 on("__cfx_nui:init", (data: any, cb: any) => {
@@ -56,14 +54,8 @@ on("__cfx_nui:update", (data: any, cb: any) => {
   cb({});
 });
 
-on("__cfx_nui:save", (data: any, cb: any) => {
-  Object.assign(settings, data);
-  settings.save();
-  toggleSettings(false);
-  cb({});
-});
-
 on("__cfx_nui:close", (data: any, cb: any) => {
+  settings.save();
   toggleSettings(false);
   cb({});
 });
@@ -186,8 +178,8 @@ setTick(() => {
     // Adaptive
     const isInInterior = !!GetInteriorFromPrimaryView();
     const hours = GetClockHours();
-    const isNight = hours > 20 || hours < 6;
-    const opacity = isNight || isInInterior ? 0.5 : 1;
+    const isNight = hours >= 19 || hours < 6;
+    const opacity = isNight || isInInterior ? settings.nightBrightness : settings.dayBrightness;
 
     if (IsVehicleEngineOn(veh)) {
       let rpm = GetVehicleCurrentRpm(veh);
@@ -220,7 +212,7 @@ interface DuiUpdateData {
 
 function sendDuiUpdate(data: DuiUpdateData) {
   sendDui({
-    unit: speedUnit ? "KMH" : "MPH",
+    unit: speedUnit ? "KM" : "Mi",
     scale: Math.max(minScale, Math.min(1, scale * settings.scale)),
     settings,
     ...data,
@@ -233,7 +225,6 @@ function sendSettingsUpdate() {
 
 function toggleSettings(state: boolean) {
   if (sendSettingsMessage("toggle", { state })) {
-    settingsVisible = state;
     SetNuiFocus(state, state);
   }
 }

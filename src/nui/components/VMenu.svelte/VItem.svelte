@@ -7,15 +7,13 @@
   export let isHidden = false;
   export let isTitle = false;
   export let onAction: (() => void) | undefined = undefined;
-  export let isAttached = false;
 
   const isSelectable = !isTitle && !isHidden;
 
-  const context = getVMenuContext();
-  const { vMenu } = context;
-  if (isFirst) context.itemCount = context.selectableItemCount = 0;
-  const index = context.itemCount++;
-  const selectIndex = isSelectable ? context.selectableItemCount++ : -1;
+  const { vMenu } = getVMenuContext();
+  if (isFirst) vMenu.resetIds();
+  const index = vMenu.getItemId();
+  const selectIndex = isSelectable ? vMenu.getSelectableItemId() : -1;
 
   const doAction = () => {
     if (!onAction) return;
@@ -23,11 +21,10 @@
     return onAction();
   };
 
-  $: if (isSelectable) vMenu.updateItem(selectIndex, { isAttached });
   $: isActive = $vMenu.activeItem === selectIndex;
 </script>
 
-{#if isAttached || (index <= $vMenu.offset + $vMenu.itemsPerPage && index > $vMenu.offset)}
+{#if index > $vMenu.offset && index <= $vMenu.offset + $vMenu.itemsPerPage + 1}
   <li
     on:click={doAction}
     class:active={isActive}
@@ -44,6 +41,7 @@
   li {
     display: flex;
     align-items: center;
+    height: 2.5rem;
 
     &:not(.title) {
       cursor: pointer;
@@ -67,6 +65,7 @@
 
     .label {
       margin-right: auto;
+      padding-right: 1rem;
     }
   }
 </style>

@@ -5,19 +5,14 @@
   import Window from "./components/Window.svelte";
   import VMenu, { VItem, BooleanVItem, RangeVItem, SliderVItem } from "./components/VMenu.svelte";
   import api from "./api";
+  import { Settings, defaults } from "../Settings";
 
   let shown = import.meta.env.DEV;
-  let enabled = true;
-  let offset = [0.5, 0.5, 0.5];
-  let color = [0, 1, 1];
+  let settings = { ...new Settings() };
 
   onMount(() => {
     api.on("toggle", (data) => (shown = data.state));
-    api.on("data", (data) => {
-      enabled = data.enabled;
-      offset = data.offset;
-      color = data.color;
-    });
+    api.on("data", (data) => Object.assign(settings, data));
   });
 
   const onKeyDown = (ev: KeyboardEvent) => {
@@ -29,7 +24,7 @@
     }
   };
 
-  $: api.send("update", { enabled, offset, color });
+  $: if (shown) api.send("update", settings);
 </script>
 
 <svelte:window on:keydown={onKeyDown} />
@@ -42,51 +37,60 @@
     </div>
 
     <VMenu>
-      <BooleanVItem label="Enabled" bind:value={enabled} />
+      <BooleanVItem label="Enabled" bind:value={settings.enabled} />
+      <BooleanVItem label="Show speed unit" bind:value={settings.showUnit} />
+      <BooleanVItem label="Show RPM bar" bind:value={settings.showRPM} />
 
       <VItem isTitle>Position</VItem>
-      {#each offset as _, i (i)}
-        <RangeVItem label={["X", "Y", "Z"][i]} bind:value={offset[i]}>
-          <button class="button revert" on:click={() => (offset[i] = 0.5)}>
+      {#each settings.offset as _, i (i)}
+        <RangeVItem label={["Sideways (X)", "Forward (Y)", "Up (Z)"][i]} bind:value={settings.offset[i]}>
+          <button class="button revert" on:click={() => (settings.offset[i] = defaults.offset[i])}>
             <Icon data={faArrowRotateBack} />
           </button>
         </RangeVItem>
       {/each}
+      <BooleanVItem label="Left aligned" bind:value={settings.leftAlign} />
 
       <VItem isTitle>
         Color
         <div
           slot="icon"
           class="color"
-          style:background-color="hsl({color[0] * 360}deg, {color[1] * 100}%, {color[2] * 100}%)"
+          style:background-color="hsl({settings.color[0] * 360}deg, {settings.color[1] * 100}%, {settings.color[2] *
+            100}%)"
         />
       </VItem>
-      <SliderVItem label="Hue" bind:value={color[0]}>
+      <SliderVItem label="Hue" bind:value={settings.color[0]}>
         <div slot="background" class="bg bg-hue" />
       </SliderVItem>
-      <SliderVItem label="Saturation" bind:value={color[1]}>
+      <SliderVItem label="Saturation" bind:value={settings.color[1]}>
         <div
           slot="background"
           class="bg"
-          style:background="linear-gradient(to right, hsl({color[0] * 360}deg, 0%, 50%), hsl({color[0] * 360}deg, 100%,
-          50%))"
+          style:background="linear-gradient(to right, hsl({settings.color[0] * 360}deg, 0%, 50%), hsl({settings
+            .color[0] * 360}deg, 100%, 50%))"
         />
       </SliderVItem>
-      <SliderVItem label="Lightness" bind:value={color[2]}>
+      <SliderVItem label="Lightness" bind:value={settings.color[2]}>
         <div
           slot="background"
           class="bg"
-          style:background="linear-gradient(to right, hsl({color[0] * 100}deg, {color[1] * 100}%, 0%), hsl({color[0] *
-            360}deg, {color[1] * 100}%, 50%), hsl({color[0] * 360}deg, {color[1] * 100}%, 100%))"
+          style:background="linear-gradient(to right, hsl({settings.color[0] * 100}deg, {settings.color[1] * 100}%, 0%),
+          hsl({settings.color[0] * 360}deg, {settings.color[1] * 100}%, 50%), hsl({settings.color[0] * 360}deg, {settings
+            .color[1] * 100}%, 100%))"
         />
       </SliderVItem>
 
-      <VItem isAttached isTitle><div slot="icon" class="separator" /></VItem>
-      <VItem isAttached onAction={() => api.send("save", { enabled, offset, color })}>
-        Save
-
-        <Icon slot="icon" data={faCheck} />
-      </VItem>
+      <RangeVItem label="Day brightness" bind:value={settings.dayBrightness}>
+        <button class="button revert" on:click={() => (settings.dayBrightness = defaults.dayBrightness)}>
+          <Icon data={faArrowRotateBack} />
+        </button>
+      </RangeVItem>
+      <RangeVItem label="Night brightness" bind:value={settings.nightBrightness}>
+        <button class="button revert" on:click={() => (settings.nightBrightness = defaults.nightBrightness)}>
+          <Icon data={faArrowRotateBack} />
+        </button>
+      </RangeVItem>
     </VMenu>
   </Window>
 {/if}
@@ -107,7 +111,7 @@
     position: relative;
     padding: 1rem;
     padding-right: 4rem;
-    min-width: 20rem;
+    width: 24rem;
     background-color: var(--accent);
     font-size: 2rem;
 
@@ -137,11 +141,6 @@
       opacity: 1;
       color: var(--accent);
     }
-  }
-
-  .separator {
-    width: 100%;
-    border-bottom: 1px solid white;
   }
 
   .color {
