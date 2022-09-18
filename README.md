@@ -12,11 +12,11 @@ Holographic vehicle speed-o-meter for FiveM (server).
 - **Configurable** - Players can adjust the hologram to their liking (TODO)
 - **Smooth** - Elegant and fluent design
 - **Stable** - It just works
+- Adjusts brightness according to day/night and in tunnels
 
 ## TODO
 
 - Configuration GUI
-- Brightness auto-adjustment (vehicle lights?)
 
 ## Credits
 

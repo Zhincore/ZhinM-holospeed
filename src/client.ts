@@ -12,7 +12,6 @@ const txdName = "zhinm_holospeed_drawable";
 const txdNameDui = txdName + "-dui";
 const txnName = "holospeed";
 
-let settingsReady = false;
 let settingsVisible = false;
 let speedUnit = "";
 let speedMult = 1;
@@ -33,7 +32,6 @@ RegisterNuiCallbackType("save");
 RegisterNuiCallbackType("close");
 
 on("__cfx_nui:init", (data: any, cb: any) => {
-  settingsReady = true;
   sendSettingsUpdate();
   cb({});
 });
@@ -185,13 +183,16 @@ setTick(() => {
       lastVeh = veh;
     }
 
-    const [_, isNight] = GetVehicleLightsState(veh);
-    const opacity = isNight ? 0.5 : 1;
+    // Adaptive
+    const isInInterior = !!GetInteriorFromPrimaryView();
+    const hours = GetClockHours();
+    const isNight = hours > 20 || hours < 6;
+    const opacity = isNight || isInInterior ? 0.5 : 1;
 
     if (IsVehicleEngineOn(veh)) {
       let rpm = GetVehicleCurrentRpm(veh);
       // Simulate limiter
-      if (rpm >= 0.9) rpm -= Math.random() * 0.1;
+      if (rpm >= 0.9) rpm -= Math.random() * 0.05;
 
       sendDuiUpdate({
         silent: false,
