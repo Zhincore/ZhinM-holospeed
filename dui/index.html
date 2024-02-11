@@ -39,6 +39,9 @@
         transform-origin: left center;
         transform: scale(var(--scale));
       }
+      body.left {
+        transform-origin: right center;
+      }
 
       #speed {
         font-family: "Square Sans Serif", sans-serif;
@@ -139,6 +142,7 @@
       const speedValEl = document.getElementById("speed-val");
       const rpmEl = document.getElementById("rpm");
       const rpmValEl = document.getElementById("rpm-val");
+      const style = document.documentElement.style;
 
       window.addEventListener("message", ({ data }) => {
         const speed = String(data.speed).padStart(3);
@@ -151,12 +155,12 @@
         speedUnitEl.classList.toggle("hidden", !data.settings.showUnit);
         speedEl.classList.toggle("larger", !data.settings.showUnit);
 
-        const style = document.documentElement.style;
         const { color } = data.settings;
         style.setProperty("--color", `hsl(${color[0] * 360}deg, ${color[1] * 100}%, ${color[2] * 100}%)`);
         style.setProperty("--opacity", data.opacity);
         style.setProperty("--scale", data.scale);
         style.setProperty("--dataOpacity", data.silent ? 0 : 1);
+        document.body.classList.toggle("left", data.settings.leftAlign);
       });
     </script>
   </body>

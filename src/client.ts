@@ -23,6 +23,7 @@ let lastVeh = 0;
 let ready = false;
 let hidden = false;
 let lastUserOffset = new Vector3(...settings.offset);
+let lastUserAlign = false;
 
 RegisterNuiCallbackType("init");
 RegisterNuiCallbackType("sound");
@@ -121,7 +122,7 @@ setTick(() => {
       hidden = false;
     }
 
-    if (lastVeh != veh || !lastUserOffset.equals(settings.offset)) {
+    if (lastVeh != veh || !lastUserOffset.equals(settings.offset) || lastUserAlign != settings.leftAlign) {
       // Attach object
       const [boxMin, boxMax] = GetModelDimensions(GetEntityModel(veh));
       const dimensions = new Vector3(...boxMax).sub(new Vector3(...boxMin));
@@ -129,7 +130,7 @@ setTick(() => {
 
       const offset = new Vector3();
 
-      for (const bone of ["wheel_lr", "wheel_rr", "wheel_lf", "wheel_rf"]) {
+      for (const bone of ["wheel_rf", "wheel_rr", "wheel_lf", "wheel_lr"]) {
         const boneOffset = getEntityBoneOffset(bone, veh);
         if (boneOffset && Math.abs(boneOffset[0]) > 0.3) {
           offset.x = Math.abs(boneOffset[0]);
@@ -139,7 +140,12 @@ setTick(() => {
       if (!offset.x) {
         offset.x = dimensions.x * 0.5;
       }
+
       offset.x += modelDimensions.x * 0.5;
+
+      if (settings.leftAlign) {
+        offset.x *= -1;
+      }
 
       const seatBoneI = GetEntityBoneIndexByName(veh, "seat_dside_f"); // Driver seat
       if (seatBoneI != -1) {
@@ -153,13 +159,20 @@ setTick(() => {
       }
 
       lastUserOffset = new Vector3(...settings.offset);
+      lastUserAlign = settings.leftAlign;
+
+      const userOffset = new Vector3(...settings.offset).sub(0.5).mult(offsetMult);
+      if (settings.leftAlign) {
+        userOffset.x *= -1;
+      }
+      console.log(GetEntityBoneIndexByName(veh, "chassis"));
 
       AttachEntityToEntity(
         objHandle,
         veh,
-        0,
+        -1,
         // Pos
-        ...offset.add(lastUserOffset.sub(0.5).mult(offsetMult)).toTuple(),
+        ...offset.add(userOffset).toTuple(),
         // Rot
         0,
         0,
